@@ -7427,7 +7427,7 @@ cc_prebuilt_library_shared {
                 "libhwconfigurationutil",
                 "libOpenCL",
                 "libsync",
-                "libui",
+                "libui_oplus",
                 "liboutils",
                 "liblog",
                 "libc++",
@@ -7655,7 +7655,7 @@ cc_prebuilt_library_shared {
                 "libhardware",
                 "liblog",
                 "libutils",
-                "libui",
+                "libui_oplus",
                 "libjson",
                 "android.hardware.graphics.common@1.0",
                 "android.hardware.graphics.common@1.1",
@@ -8360,7 +8360,7 @@ cc_prebuilt_library_shared {
                 "libOGLManager",
                 "libDeVIS",
                 "liblog",
-                "libui",
+                "libui_oplus",
                 "libutils",
                 "libGLESv3",
                 "libEGL",
@@ -8581,7 +8581,7 @@ cc_prebuilt_library_shared {
             shared_libs: [
                 "liblog",
                 "libsharebuffer",
-                "libui",
+                "libui_oplus",
                 "libutils",
                 "libnativewindow",
                 "libc++_shared",
@@ -12065,7 +12065,7 @@ cc_prebuilt_library_shared {
             shared_libs: [
                 "libdmabufheap",
                 "libnativewindow",
-                "libui",
+                "libui_oplus",
                 "libutils",
                 "libcutils",
                 "liblog",
@@ -12836,6 +12836,56 @@ cc_prebuilt_binary {
     strip: {
         none: true,
     },
+    prefer: true,
+    device_specific: true,
+}
+
+cc_prebuilt_library_shared {
+    name: "libui_oplus",
+    owner: "oneplus",
+    // OPlus/ColorOS-era libui shipped alongside AOSP's so the odm camera algo libs
+    // (libHIS/libEIS/libsharebuffer_impl/camera.oemlayer/com.oplus.node.sstabphoto),
+    // which were built against the smaller ColorOS GraphicBuffer ABI, get a matching
+    // layout on teardown instead of walking AOSP's larger one -> SIGSEGV in
+    // GraphicBuffer::~GraphicBuffer (provider crash). SONAME set to libui_oplus.so and
+    // allocator-V1-ndk bumped to V2 (only V2 exists on this A16 build). Non-camera
+    // vendor keeps platform libui; com.qti.node.dewarp (QTI) is intentionally NOT repointed.
+    strip: {
+        none: true,
+    },
+    target: {
+        android_arm64: {
+            srcs: [
+                "proprietary/odm/lib64/libui_oplus.so",
+            ],
+        },
+    },
+    check_elf_files: false,
+    compile_multilib: "64",
+    prefer: true,
+    device_specific: true,
+}
+
+cc_prebuilt_library_shared {
+    name: "libOplusSecurity",
+    owner: "oneplus",
+    // APS security/config lib, dlopen'd by the camera app (opluscamera_app) via the sphal
+    // namespace (libvndksupport android_load_sphal_library). Absent on the port ->
+    // "Could not load libOplusSecurity.so from sphal namespace" and APS-side failures.
+    // Deferred gap restored (aston 5a38658d). Blob soname is already libOplusSecurity.so;
+    // only standard deps (liblog/libc/libm/libdl), no fixups needed.
+    strip: {
+        none: true,
+    },
+    target: {
+        android_arm64: {
+            srcs: [
+                "proprietary/odm/lib64/libOplusSecurity.so",
+            ],
+        },
+    },
+    check_elf_files: false,
+    compile_multilib: "64",
     prefer: true,
     device_specific: true,
 }

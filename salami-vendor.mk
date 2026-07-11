@@ -1258,6 +1258,7 @@ PRODUCT_PACKAGES += \
     libFaceDistortionCorrection \
     libFilterWrapper \
     libHIS \
+    libui_oplus \
     libImageWarpMask \
     libOGLManager \
     libOPAlgoCamAIBeautyBodyDetection \
@@ -1268,6 +1269,7 @@ PRODUCT_PACKAGES += \
     libOPAlgoCamSinglePortrait \
     libOPLUS_SCPortrait \
     libOplusPDCore \
+    libOplusSecurity \
     libPerfectColor \
     libPerfectlyClearCruxOpt \
     libPlatformValidatorShared \
